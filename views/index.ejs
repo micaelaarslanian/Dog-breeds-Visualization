@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Breeds</title>
+  <link rel="stylesheet" type="text/css" href="styles/stylesheet.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>🐶Find the best Dog Breed according to your needs🐶</h1>
+
+    <!-- creates the form with the dropdown options -->
+      <form action="/" id="form" class="form" method="POST">
+        <select name="type" class="form-select">
+          <option value="" data-display="Select">Select a group</option>
+          <option value="See All">See All</option>
+          <!-- for loop that goes through all the groups and creates a droptown option for each group -->
+          <% for (let oneGroupAtTheTime = 0; oneGroupAtTheTime < breedsByGroups.length; oneGroupAtTheTime++) { %>
+            <option value="<%=breedsByGroups[oneGroupAtTheTime].id %>" > <%= breedsByGroups[oneGroupAtTheTime].attributes.name%> </option>
+          <% } %>
+        </select> 
+        
+      <button type="submit" class="form-submit">Submit</button>
+      </form>
+  </div>
+    
+
+  <!-- if statement that checks if the breeds array is not empty and if it is not, it prints the breeds -->
+  <% if (breeds) { %> 
+  <% if (breeds.length > 0) { %>
+    <h1>Breeds that correspond to the selected group:</h1>
+    <ul>
+      <% breeds.forEach(breed => { %>
+        <li><%= breed %></li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No group selected or no breeds available for the selected group.</p>
+  <% } %>
+  <% } %>
+  
+
+  <!-- if user selects 'See all', display this:-->
+  <h1>All Breeds Organised By Groups</h1>
+  <!-- Prints all the data organised by group -->
+  <% for (let i = 0; i < breedsByGroups.length; i++) { %>
+    <h2> <%= breedsByGroups[i].attributes.name + ", GROUP ID: " + breedsByGroups[i].id %></h2>
+    <% for (let j = 0; j < breedsByGroups[i].relationships.breeds.data.length ; j++) { %>
+      <p> <%=  j + ". BREED ID: " +  breedsByGroups[i].relationships.breeds.data[j].id %> </p>
+    <% } %>
+    <% } %>
+
+
+  <div class="breeds">   
+</body>
+
+</html>
