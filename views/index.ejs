@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breeds</title>
+  <!-- Link to Google Fonts for Material Design typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Link to Materialize CSS for Material Design components -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <link rel="stylesheet" type="text/css" href="styles/stylesheet.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="center-align">🐶 Find the Best Dog Breed According to Your Needs 🐶</h1>
+
+    <!-- Form with dropdown options -->
+    <form action="/" id="form" class="form" method="POST">
+      <div class="input-field">
+        <select name="selectedGroupId" id="groupSelect">
+          <option value="" disabled selected>Select a group</option>
+          <option value="See All">See All</option>
+          <% breedsByGroups.forEach(group=> { %>
+            <option value="<%= group.id %>">
+              <%= group.attributes.name %>
+            </option>
+            <% }); %>
+        </select>
+        <label>Select a Dog Group</label>
+      </div>
+      <div class="center-align">
+        <button type="submit" class="btn waves-effect waves-light">Submit</button>
+      </div>
+    </form>
+
+    <!-- Display breeds corresponding to the selected group -->
+    <% if (breeds && breeds.length> 0) { %>
+      <h2 class="center-align"> All breeds from <%= selectedGroupName %>
+      </h2>
+      <ul class="collection">
+        <% breeds.forEach(breed=> { %>
+          <li class="collection-item">
+            <%= breed.attributes.name %> - Max Life: <%= breed.attributes.life.max %>
+          </li>
+          <% }); %>
+      </ul>
+      <% } else if (breeds) { %>
+        <p class="center-align">No group selected or no breeds available for the selected group.</p>
+        <% } %>
+
+          <!-- Display all breeds organized by groups -->
+          <div id="allBreedsSection" style="display: none;">
+            <h2 class="center-align">All Breeds Organised By Groups</h2>
+            <% breedsByGroups.forEach(group=> { %>
+              <h3>
+                <%= group.attributes.name %> (Group ID: <%= group.id %>)
+              </h3>
+              <ul class="collection">
+                <% group.relationships.breeds.data.forEach((breed, index)=> { %>
+                  <li class="collection-item">
+                    <%= index + 1 %>. Breed ID: <%= breed.id %>
+                  </li>
+                  <% }); %>
+              </ul>
+              <% }); %>
+          </div>
+  </div>
+
+  <!-- Link to Materialize JavaScript for component functionality -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize Materialize components
+      var elems = document.querySelectorAll('select');
+      M.FormSelect.init(elems);
+
+      // Show/hide allBreedsSection based on dropdown selection
+      var groupSelect = document.getElementById('groupSelect');
+      var allBreedsSection = document.getElementById('allBreedsSection');
+
+      groupSelect.addEventListener('change', function () {
+        if (this.value === 'See All') {
+          allBreedsSection.style.display = 'block';
+        } else {
+          allBreedsSection.style.display = 'none';
+        }
+      });
+
+      // Trigger change event on page load to set initial state
+      groupSelect.dispatchEvent(new Event('change'));
+    });
+  </script>
+</body>
+
+</html>
